@@ -25,10 +25,12 @@ will return a list of current prices for tickers specified in a .csv
 
 will return a list of current prices for the top 10 cryptocurrencies by market cap
 
-```cmc get --exchange= --convert=```
+```cmc get --exchange= --convert= --watch```
 
 the exchange flag will set the exchange to pull price from
 
 the convert flag will set the final currency to display prices in (USD, BTC, EUR, etc)
+
+the watch flag will refresh the price for the tickers you've selected every minute
 
 these flags will be compatible with all of the above commands
