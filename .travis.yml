@@ -14,7 +14,7 @@ env:
 
 install:
 # needed for snap pipe:
-- sudosnap install snapcraft --classic
+- sudo snap install snapcraft --classic
 
 # needed for docker pipe
 services:
