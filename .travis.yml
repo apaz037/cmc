@@ -1,0 +1,32 @@
+# .travis.yml
+language: go
+
+addons:
+   apt:
+     packages:
+     # needed for nfpm pipe:
+     - rpm
+     # needed for snap pipe:
+     - snapd
+env: 
+# needed for the snap pipe:
+- PATH=/snap/bin:$PATH
+
+install:
+# needed for snap pipe:
+- sudosnap install snapcraft --classic
+
+# needed for docker pipe
+services:
+- docker
+
+after_success:
+## add tests
+
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: curl -sL https://git.io/goreleaser | bash
+  on:
+    tags: true
+    condition: $TRAVIS_OS_NAME = linux
