@@ -17,9 +17,10 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"github.com/leekchan/accounting"
+	"github.com/apaz037/cmc/utils"
 	api "github.com/miguelmota/go-coinmarketcap/v2"
 	"github.com/spf13/cobra"
+	"strings"
 )
 
 var ticker string
@@ -32,9 +33,10 @@ var getCmd = &cobra.Command{
 	Long: `Get pulls the latest price for a cryptocurrency by ticker`,
 	Args: cobra.ExactArgs(1), // TODO: change validation in future as feature set expands
 	RunE: func(cmd *cobra.Command, args []string) error {
-		price, err := getPrice(args[0])
-		if err != nil && price == 0 {
-			return errors.New("Could not retrieve price for:" +  ticker)
+		ticker = strings.ToUpper(args[0])
+		err := getPrice(ticker)
+		if err != nil {
+			return errors.New("Could not retrieve price for:" + ticker)
 		}
 		return nil
 	},
@@ -54,7 +56,7 @@ func init() {
 	//getCmd.Flags().StringP("toggle", "t", false, "Help message for toggle")
 }
 
-func getPrice(ticker string) (float64, error) {
+func getPrice(ticker string) error {
 	priceOptions := &api.PriceOptions{
 		Symbol: ticker,
 		Convert: "USD",
@@ -62,14 +64,12 @@ func getPrice(ticker string) (float64, error) {
 
 	quote, err := api.Price(priceOptions)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	ac := accounting.Accounting{
-		Symbol: "$",
-		Precision: 2,
-	}
+	formattedPrice := utils.FormatPrice(quote, "$", 2)
+	output := utils.BuildStringOutput(ticker, formattedPrice)
 
-	fmt.Println(ticker, ":", ac.FormatMoney(quote))
-	return quote, nil
+	fmt.Print(output)
+	return nil
 }
