@@ -17,6 +17,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"github.com/leekchan/accounting"
 	api "github.com/miguelmota/go-coinmarketcap/v2"
 	"github.com/spf13/cobra"
 )
@@ -64,6 +65,11 @@ func getPrice(ticker string) (float64, error) {
 		return 0, err
 	}
 
-	fmt.Println(ticker, ":",  quote)
+	ac := accounting.Accounting{
+		Symbol: "$",
+		Precision: 2,
+	}
+
+	fmt.Println(ticker, ":", ac.FormatMoney(quote))
 	return quote, nil
 }
