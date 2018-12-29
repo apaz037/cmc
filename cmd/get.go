@@ -29,7 +29,7 @@ var getCmd = &cobra.Command{
 	Short: "Get pulls the latest price for a cryptocurrency by ticker",
 	Example: "cmc get eth",
 	Long: `Get pulls the latest price for a cryptocurrency by ticker`,
-	Args: cobra.ExactArgs(1),
+	Args: cobra.ExactArgs(1), // TODO: change validation in future as feature set expands
 	RunE: func(cmd *cobra.Command, args []string) error {
 		price, err := getPrice(args[0])
 		if err != nil && price == 0 {

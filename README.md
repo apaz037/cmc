@@ -2,7 +2,7 @@
 a CLI tool for pulling coinmarketcap api data
 
 ## Install
-```go get github.com/apaz037/cmc && cd $GOROOT/src/github.com/apaz037/cmc && go install```
+```go get github.com/apaz037/cmc && cd $GOPATH/src/github.com/apaz037/cmc && go install```
 
 ## Current functionality
 
