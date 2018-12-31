@@ -15,12 +15,10 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"github.com/apaz037/cmc/utils"
 	api "github.com/miguelmota/go-coinmarketcap/v2"
 	"github.com/spf13/cobra"
-	"strings"
 )
 
 var ticker string
@@ -31,13 +29,9 @@ var getCmd = &cobra.Command{
 	Short: "Get pulls the latest price for a cryptocurrency by ticker",
 	Example: "cmc get eth",
 	Long: `Get pulls the latest price for a cryptocurrency by ticker`,
-	Args: cobra.ExactArgs(1), // TODO: change validation in future as feature set expands
+	Args: cobra.ArbitraryArgs, // TODO: change validation in future as feature set expands
 	RunE: func(cmd *cobra.Command, args []string) error {
-		ticker = strings.ToUpper(args[0])
-		err := getPrice(ticker)
-		if err != nil {
-			return errors.New("Could not retrieve price for:" + ticker)
-		}
+		getPrice(args...)
 		return nil
 	},
 }
@@ -56,20 +50,22 @@ func init() {
 	//getCmd.Flags().StringP("toggle", "t", false, "Help message for toggle")
 }
 
-func getPrice(ticker string) error {
-	priceOptions := &api.PriceOptions{
-		Symbol: ticker,
-		Convert: "USD",
+func getPrice(tickers ...string) error {
+	for _, ticker := range tickers {
+		priceOptions := &api.PriceOptions{
+			Symbol:  ticker,
+			Convert: "USD",
+		}
+
+		quote, err := api.Price(priceOptions)
+		if err != nil {
+			return err
+		}
+
+		formattedPrice := utils.FormatPrice(quote, "$", 2)
+		output := utils.BuildStringOutput(ticker, formattedPrice)
+
+		fmt.Print(output)
 	}
-
-	quote, err := api.Price(priceOptions)
-	if err != nil {
-		return err
-	}
-
-	formattedPrice := utils.FormatPrice(quote, "$", 2)
-	output := utils.BuildStringOutput(ticker, formattedPrice)
-
-	fmt.Print(output)
 	return nil
 }
